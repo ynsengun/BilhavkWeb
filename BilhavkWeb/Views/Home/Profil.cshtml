@@ -1,0 +1,52 @@
+﻿@using BilhavkWeb.Models
+@model IEnumerable<User>
+@{
+    ViewBag.Title = "Profil";
+}
+
+@if (HttpContext.Current.User.Identity.Name == "Admin")
+{
+    <div class="mb-4">
+        @Html.ActionLink("Etkinlik katılımcılarını temizle", "DeleteAll", "Participant", new { }, new { @class = "btn btn-lg btn-danger w-100" })
+    </div>
+    <div>
+        <ul class="list-group">
+            @foreach (var item in Model.OrderBy(x => x.Name))
+            {
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-lg-4 col-6">
+                            @item.Name
+                            @item.Surname
+                        </div>
+                        <div class="col-lg-1 col-6">
+                            @if (item.Name != "Admin")
+                            {
+                                @item.Category.Name
+                            }
+                            else
+                            {
+                                <span>Admin</span>
+                            }
+                        </div>
+                        @if (item.Name != "Admin")
+                        {
+                            <div class="col-lg-7 col text-lg-right">
+                                @Html.ActionLink("Sil", "DeleteUser", "Home", new User() { Id = item.Id }, new { @class = "btn btn-sm btn-danger" })
+                                @Html.ActionLink("Inakt", "UpdateUser", "Home", new User() { Id = item.Id, CategoryId = 1 }, new { @class = "btn btn-sm btn-secondary" })
+                                @Html.ActionLink("P2", "UpdateUser", "Home", new User() { Id = item.Id, CategoryId = 2 }, new { @class = "btn btn-sm btn-secondary" })
+                                @Html.ActionLink("P3", "UpdateUser", "Home", new User() { Id = item.Id, CategoryId = 3 }, new { @class = "btn btn-sm btn-secondary" })
+                                @Html.ActionLink("Mezun", "UpdateUser", "Home", new User() { Id = item.Id, CategoryId = 4 }, new { @class = "btn btn-sm btn-secondary" })
+                            </div>
+                        }
+                    </div>
+                </li>
+            }
+        </ul>
+    </div>
+}
+else
+{
+    <h2 class="mb-4">Coming Soon...</h2>
+}
+

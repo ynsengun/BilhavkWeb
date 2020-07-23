@@ -1,0 +1,110 @@
+﻿@using BilhavkWeb.Models
+@model IEnumerable<Day>
+@{
+    ViewBag.Title = "Index";
+}
+
+<script>
+    $(document).ready(function () {
+        $("#name").val("");
+        $("#addButton").attr("disabled", true);
+
+        $(".form-control").keyup(function () {
+            console.log($("#name").val() + "\n" + $("#password").val() + "\n");
+            if ($("#name").val() != "")
+                $("#addButton").attr("disabled", false);
+            else
+                $("#addButton").attr("disabled", true);
+        });
+    });
+</script>
+
+@if (HttpContext.Current.User.Identity.IsAuthenticated == false)
+{
+    <div class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
+        Adınızı ekleyebilmek için lütfen <a href="Security/Login">giriş</a> yapınız.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
+
+@if (HttpContext.Current.User.Identity.Name == "Admin")
+{
+    using (Html.BeginForm("Add", "Day", FormMethod.Post))
+    {
+        <div class="card mb-3">
+            <div class="card-body">
+                Etkinlik Adı
+                @Html.TextBox("Name", null, new { @class = "form-control", type = "text" })
+                Liste Kapanış
+                @Html.TextBox("Date", null, new { @class = "form-control", type = "datetime-local" })
+                <button id="addButton" type="submit" class="btn btn-outline-primary w-100 mt-3">
+                    Kaydet
+                </button>
+            </div>
+        </div>
+    }
+}
+
+<div class="mb-3">
+    Sistem Saati : @DateTime.Now.ToString()
+</div>
+
+<div class="card-deck">
+    @foreach (var item in Model)
+    {
+        <div class="card">
+            <div class="card-header">
+                @if (HttpContext.Current.User.Identity.Name == "Admin")
+                {
+                    <div class="my-3">
+                        @Html.ActionLink("Sil", "Delete", "Day", new Day { Id = item.Id }, new { @class = "btn btn-outline-danger w-100" })
+                    </div>
+                }
+                <span class="float-left">
+                    @item.Name
+                </span>
+                @if (HttpContext.Current.User.Identity.IsAuthenticated && DateTime.Now.CompareTo(item.Date) <= 0)
+                {
+                    <span class="float-right">
+                        @if (item.Participants.FirstOrDefault(x => x.User.Name == HttpContext.Current.User.Identity.Name) != null)
+                        {
+                            @Html.ActionLink("Çıkar", "Delete", "Participant", new Day() { Id = item.Id }, new { @class = "btn btn-sm btn-danger" })
+                        }
+                        else
+                        {
+                            @Html.ActionLink("Ekle", "Add", "Participant", new Day() { Id = item.Id }, new { @class = "btn btn-sm btn-success" })
+                        }
+                    </span>
+                }
+                <br />
+                <hr />
+                <div class="text-muted" style="font-size:10px; margin-top:-12px; margin-bottom:-9px">
+                    Liste Kapanış: @item.Date.ToString()
+                </div>
+            </div>
+            <ul class="list-group-flush pl-0">
+                @if (item.Participants.ToList() != null)
+                {
+                    foreach (var i in item.Participants.ToList())
+                    {
+                        if (i.User.CategoryId != 1)
+                        {
+                            <li class="list-group-item">
+                                @i.User.Name
+                                @i.User.Surname
+                                @if (HttpContext.Current.User.Identity.Name == "Admin" && i.User.Ge250)
+                                {
+                                    <br>
+                                    @i.User.StudentID
+                                }
+                            </li>
+                        }
+                    }
+                }
+            </ul>
+        </div>
+    }
+</div>
+

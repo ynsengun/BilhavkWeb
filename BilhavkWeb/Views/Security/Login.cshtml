@@ -1,0 +1,60 @@
+﻿@{
+    ViewBag.Title = "Login";
+}
+
+<script>
+    $(document).ready(function () {
+        $("#NickName").val("");
+        $("#Password").val("");
+        $("#addButton").attr("disabled", true);
+
+        
+        $(".form-control").keyup(function () {
+            if ($("#NickName").val() != "" && $("#Password").val() != "")
+                $("#addButton").attr("disabled", false);
+            else
+                $("#addButton").attr("disabled", true);
+        });
+    });
+</script>
+
+<div class="justify-content-center row mb-5 mt-4">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                Oturum Aç
+            </div>
+            <div class="card-body">
+                @using (Html.BeginForm("Login", "Security", FormMethod.Post))
+                {
+                    <p class="text-danger">
+                        @ViewBag.message
+                    </p>
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <label for="NickName" class="col-form-label">Kullanıcı Adı</label>
+                        </div>
+                        <div class="col-lg-8">
+                            @Html.TextBox("NickName", null, new { @class = "form-control", type = "text", autofocus = "autofocus" })
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-lg-4">
+                            <label for="Password" class="col-form-label">Parola</label>
+                        </div>
+                        <div class="col-lg-8">
+                            @Html.TextBox("Password", null, new { @class = "form-control", type = "password" })
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-lg-3 offset-lg-4">
+                            <button id="addButton" type="submit" class="btn btn-outline-primary w-100">
+                                Oturum Aç
+                            </button>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

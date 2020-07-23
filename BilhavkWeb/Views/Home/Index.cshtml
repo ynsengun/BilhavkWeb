@@ -1,0 +1,149 @@
+﻿@using BilhavkWeb.Models
+@model IEnumerable<Category>
+@{
+    ViewBag.Title = "Index";
+}
+
+@if (HttpContext.Current.User.Identity.IsAuthenticated && ViewBag.loggedin == true)
+{
+    <div class="alert alert-success alert-dismissible fade show mb-3" role="alert">
+        Hoşgeldin <strong>@HttpContext.Current.User.Identity.Name</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    if (HttpContext.Current.User.Identity.Name != "Admin" && Model.ElementAt(0).Users.FirstOrDefault(x => x.Name == HttpContext.Current.User.Identity.Name) != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
+            Kullanıcı profiliniz inaktif
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+}
+
+<div class="w-25 mx-auto mb-4">
+    <img src="~/Img/bilhavk logo.png" alt="bilhavk" class="w-100" />
+</div>
+
+<div class="card mb-3">
+    <div class="row no-gutters">
+        <div class="col-lg-4 d-lg-none">
+            <img src="~/Img/bilhavk grup.jpeg" class="card-img coverimage" alt="bilhavk">
+        </div>
+        <div class="col-lg-8">
+            <div class="card-body">
+                <h5 class="card-title">Biz Kimiz</h5>
+                <p class="card-text">
+                    Kulübümüz Bilkent Havacılık Kulübü yani Bilhavk 20 yılı aşkın bir süredir doğayı seven ve doğa ile iç içe olmak isteyen Bilkent öğrencilerini yamaç paraşütü sporuyla tanıştıran bir üniversite kulübüdür. Bilhavk doğa ve spor tutkunu öğrencileri bir arada toplar ve havanın uygun olduğu her hafta sonu üniversite hayatının yorucu ve stresli düzenine bir dur diyerek yüksek adrenalin hissiyatı ile birlikte özgürlük hislerini doruklarda yaşamalarına imkân verir. Sadece doğal kuvvetler kullanılarak gerçekleşen bu spor, gerekli tüm ekipmanın bir çantaya sığdırılabilmesi sayesinde son derece keyifli ve ulaşılabilir bir etkinliktir. Bilhavk ile aldığınız bir eğitimi size yeni bir sporun kapılarını açarken en keyifli sohbetler, arkadaşlıklar ve en güzel manzaraları beraberinde getirir.
+                </p>
+            </div>
+        </div>
+        <div class="d-none d-lg-flex col-lg-4">
+            <img src="~/Img/bilhavk grup.jpeg" class="card-img coverimage" alt="bilhavk">
+        </div>
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="row no-gutters">
+        <div class="col-lg-4">
+            <img src="~/Img/dyr.jpg" class="card-img coverimage" alt="bilhavk">
+        </div>
+        <div class="col-lg-8">
+            <div class="card-body">
+                <h5 class="card-title">Duyurular</h5>
+                <p class="card-text">
+
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="row no-gutters">
+        <div class="col-lg-4 d-lg-none">
+            <img src="~/Img/NurefBirinci.jpeg" class="card-img coverimage" alt="bilhavk">
+        </div>
+        <div class="col-lg-8">
+            <div class="card-body">
+                <h5 class="card-title">Ayın Pilotu</h5>
+                <p class="card-text">
+                </p>
+            </div>
+        </div>
+        <div class="d-none d-lg-flex col-lg-4">
+            <img src="~/Img/NurefBirinci.jpeg" class="card-img coverimage" alt="bilhavk">
+        </div>
+    </div>
+</div>  
+
+<div class="card-deck mt-4 d-none d-lg-flex">
+    @foreach (var item in Model)
+    {
+        if (item.Id != 1)
+        {
+            <div class="card">
+                <img src=@item.Pic class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">@item.Name</h5>
+                    <p class="card-text">
+                        <ul>
+                            @if (item.Users.ToList() != null)
+                            {
+                                foreach (var i in item.Users.OrderBy(i => i.Name).ToList())
+                                {
+                                    <li>
+                                        @i.Name
+                                        @i.Surname
+                                    </li>
+                                }
+                            }
+                        </ul>
+                    </p>
+                </div>
+            </div>
+        }
+    }
+</div>
+
+<div class="accordion mt-4 d-lg-none" id="accordionid">
+    @foreach (var item in Model)
+    {
+        if (item.Id != 1)
+        {
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="mb-0">
+                        <button class="btn btn-light" type="button" data-toggle="collapse" data-target="#@item.Name">
+                            @item.Name
+                        </button>
+                    </h2>
+                </div>
+
+                <div id="@item.Name" class="collapse" data-parent="#accordionid">
+                    <img src=@item.Pic class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <p class="card-text">
+                            <ul>
+                                @if (item.Users.ToList() != null)
+                                {
+                                    foreach (var i in item.Users.OrderBy(i => i.Name).ToList())
+                                    {
+                                        <li>
+                                            @i.Name
+                                            @i.Surname
+                                        </li>
+                                    }
+                                }
+                            </ul>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+
+</div>
